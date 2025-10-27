@@ -7,6 +7,8 @@ public class DoorController : MonoBehaviour, IInteractable
     public void Interact()
     {
         _isOpen = !_isOpen;
-        Debug.Log($"Puerta: ahora está {(_isOpen ? "abierta" : "cerrada")}");
+        Debug.Log(_isOpen ? "La puerta se ha ABIERTO." : "La puerta se ha CERRADO.");
+
+        // Aquí activarías una animación o rotarías el objeto.
     }
 }

@@ -6,14 +6,15 @@ public class LootChestController : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        if (!_isOpened)
+        if (_isOpened)
         {
-            _isOpened = true;
-            Debug.Log("Has encontrado un tesoro!");
+            Debug.Log("Este cofre ya ha sido abierto.");
+            return;
         }
-        else
-        {
-            Debug.Log("El cofre ya está abierto.");
-        }
+
+        _isOpened = true;
+        Debug.Log("¡Has abierto el cofre y encontrado un tesoro!");
+
+        // Aquí instanciarías un ítem, añadirías oro al inventario, etc.
     }
 }
