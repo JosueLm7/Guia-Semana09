@@ -1,17 +1,12 @@
 using UnityEngine;
 
-public class TerminalController : MonoBehaviour, IInteractable
+public class TerminalController : MonoBehaviour
 {
-    [SerializeField] private Light terminalLight; // arrastra aquí la luz
-    private bool _isActive = false;
-
-    public void Interact()
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Interact()
     {
-        _isActive = !_isActive;
-
-        // cambia el color entre verde y rojo
-        terminalLight.color = _isActive ? Color.green : Color.red;
-
-        Debug.Log($"Estado del sistema: {(_isActive ? "Activo" : "Inactivo")}");
+        Debug.Log("Terminal activado. Disparando evento OnObjetiveActivated.");
+        GameEvents.TriggerObjectiveActivated();
     }
+
 }

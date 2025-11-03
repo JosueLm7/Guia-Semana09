@@ -21,24 +21,22 @@ public class FirstPersonController : MonoBehaviour
     private Vector2 _lookInput;
     private float _xRotation = 0f;
 
+
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
-
         if (_cameraTransform == null)
         {
             Debug.LogError("Error: La referencia a la Transform de la cámara no está asignada en el FirstPersonController.", this);
             this.enabled = false;
             return;
         }
-
         _inputActions = new PlayerInputActions();
     }
 
     private void OnEnable()
     {
         _inputActions.Player.Enable();
-
         _inputActions.Player.Move.performed += OnMoveInput;
         _inputActions.Player.Move.canceled += OnMoveInput;
         _inputActions.Player.Look.performed += OnLookInput;
@@ -51,9 +49,9 @@ public class FirstPersonController : MonoBehaviour
         _inputActions.Player.Move.canceled -= OnMoveInput;
         _inputActions.Player.Look.performed -= OnLookInput;
         _inputActions.Player.Look.canceled -= OnLookInput;
-
         _inputActions.Player.Disable();
     }
+
 
     private void Update()
     {
@@ -71,6 +69,7 @@ public class FirstPersonController : MonoBehaviour
         _lookInput = context.ReadValue<Vector2>();
     }
 
+
     private void HandleMovement()
     {
         Vector3 moveDirection = transform.forward * _moveInput.y + transform.right * _moveInput.x;
@@ -82,14 +81,14 @@ public class FirstPersonController : MonoBehaviour
         // Rotación horizontal (eje Y)
         float mouseX = _lookInput.x * _mouseSensitivity * Time.deltaTime;
         transform.Rotate(Vector3.up * mouseX);
-
+        
         // Rotación vertical (eje X)
         float mouseY = _lookInput.y * _mouseSensitivity * Time.deltaTime;
         _xRotation -= mouseY;
-
-        // Limitamos la rotación vertical para evitar giros completos.
+        
+        // Limitamos (clamp) la rotación vertical para evitar giros completos
         _xRotation = Mathf.Clamp(_xRotation, -_verticalLookLimit, _verticalLookLimit);
-
         _cameraTransform.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
     }
+
 }

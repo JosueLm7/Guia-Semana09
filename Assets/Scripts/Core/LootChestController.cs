@@ -14,7 +14,7 @@ public class LootChestController : MonoBehaviour, IInteractable
 
         _isOpened = true;
         Debug.Log("¡Has abierto el cofre y encontrado un tesoro!");
-
-        // Aquí instanciarías un ítem, añadirías oro al inventario, etc.
+        
+        // Aquí instanciarías un item, añadirías oro al inventario, etc.
     }
 }
