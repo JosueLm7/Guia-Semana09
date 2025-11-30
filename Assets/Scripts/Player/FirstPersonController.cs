@@ -4,59 +4,88 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(CharacterController))]
 public class FirstPersonController : MonoBehaviour
 {
-    private PlayerInputActions _input;
-    private CharacterController _controller;
-    private Transform _camera;
+    [Header("Movement Settings")]
+    [SerializeField] private float _movementSpeed = 5.0f;
 
-    [SerializeField] private float _speed = 5f;
-    [SerializeField] private float _sensitivity = 1f;
+    [Header("Look Settings")]
+    [SerializeField] private float _mouseSensitivity = 5.0f;
+    [SerializeField] private float _verticalLookLimit = 80.0f;
 
-    private Vector2 _move;
-    private Vector2 _look;
+    [Header("Component References")]
+    [SerializeField] private Transform _cameraTransform;
+
+    private CharacterController _characterController;
+    private PlayerInputActions _inputActions;
+
+    private Vector2 _moveInput;
+    private Vector2 _lookInput;
     private float _xRotation = 0f;
 
     private void Awake()
     {
-        _input = new PlayerInputActions();
-        _controller = GetComponent<CharacterController>();
-        _camera = Camera.main.transform;
+        _characterController = GetComponent<CharacterController>();
+        if(_cameraTransform == null)
+        {
+            Debug.LogError("ERROR: La referencia a la Transform de la camara no esta asignada en el FirstPersonController del jugador.");
+            this.enabled = false;
+            return;
+        }
+
+        _inputActions = new PlayerInputActions();
     }
 
     private void OnEnable()
     {
-        _input.Player.Enable();
-        _input.Player.Move.performed += ctx => _move = ctx.ReadValue<Vector2>();
-        _input.Player.Move.canceled += ctx => _move = Vector2.zero;
-        _input.Player.Look.performed += ctx => _look = ctx.ReadValue<Vector2>();
-        _input.Player.Look.canceled += ctx => _look = Vector2.zero;
+        _inputActions.Player.Enable();
+        _inputActions.Player.Move.performed += OnMoveInput;
+        _inputActions.Player.Move.canceled += OnMoveInput;
+        _inputActions.Player.Look.performed += OnLookInput;
+        _inputActions.Player.Look.canceled += OnLookInput;
+
     }
 
     private void OnDisable()
     {
-        _input.Player.Disable();
+        _inputActions.Player.Move.performed -= OnMoveInput;
+        _inputActions.Player.Move.canceled -= OnMoveInput;
+        _inputActions.Player.Look.performed -= OnLookInput;
+        _inputActions.Player.Look.canceled -= OnLookInput;
+
+        _inputActions.Player.Disable();
     }
 
-    private void Update()
+    // Update is called once per frame
+    void Update()
     {
-        Move();
-        Look();
+        HandleMovement();
+        HandleLook();
     }
 
-    private void Move()
+    private void OnMoveInput(InputAction.CallbackContext context)
     {
-        Vector3 move = transform.right * _move.x + transform.forward * _move.y;
-        _controller.Move(move * _speed * Time.deltaTime);
+        _moveInput = context.ReadValue<Vector2>();
+    }
+    private void OnLookInput(InputAction.CallbackContext context)
+    {
+        _lookInput = context.ReadValue<Vector2>();
     }
 
-    private void Look()
+    private void HandleMovement()
     {
-        float mouseX = _look.x * _sensitivity;
-        float mouseY = _look.y * _sensitivity;
+        Vector3 moveDirection = transform.forward * _moveInput.y + transform.right * _moveInput.x;
+        _characterController.Move(moveDirection * _movementSpeed * Time.deltaTime);
+    }
 
-        _xRotation -= mouseY;
-        _xRotation = Mathf.Clamp(_xRotation, -90f, 90f);
-
-        _camera.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
+    private void HandleLook()
+    {
+        float mouseX = _lookInput.x * _mouseSensitivity * Time.deltaTime;
         transform.Rotate(Vector3.up * mouseX);
+        float mouseY = _lookInput.y * _mouseSensitivity * Time.deltaTime;
+        _xRotation -=mouseY;
+
+        _xRotation = Mathf.Clamp(_xRotation,-_verticalLookLimit,_verticalLookLimit);
+
+        _cameraTransform.localRotation = Quaternion.Euler(_xRotation,0f,0f);
     }
+
 }

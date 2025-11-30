@@ -15,7 +15,7 @@ public class InGameState : UIState
 
     public override void Exit()
     {
-        Debug.Log("Saliendo del estado de En Juego");
+        Debug.Log("Saliendo del estado de Menú Principal");
         m_uiManager.inGameHudPanel.SetActive(false);
     }
 }

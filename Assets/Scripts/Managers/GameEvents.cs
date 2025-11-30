@@ -1,30 +1,33 @@
-using System; // Para la clase "Action"
-using UnityEngine; // Para poder usar GameObject
+using System;
 
-/// <summary>
-/// Contenedor estático para los eventos globales del juego
-/// Permite una comunicación desacoplada entre diferentes sistemas (Patrón Observer)
-/// </summary>
 public static class GameEvents
 {
-    // Evento que se dispara cuando un terminal de objetivo es activado
+    // Eventos existentes
     public static event Action OnObjectiveActivated;
-    public static event Action<GameObject> OnITargetFocused;
-    public static event Action<GameObject> OnITargetLost;
+    
+    // Nuevos eventos necesarios
+    public static event Action<string> OnSpecificObjectiveCompleted;
+    public static event Action OnAllObjectivesCompleted;
+    public static event Action OnEnemyDefeated;
 
-    // Método para invocar el evento desde cualquier lugar, de forma segura
+    // Métodos para disparar eventos
     public static void TriggerObjectiveActivated()
     {
-        // El '?' comprueba si hay algún suscriptor antes de invocar el evento
         OnObjectiveActivated?.Invoke();
     }
-
-    public static void TriggerITargetFocused(GameObject target)
+    
+    public static void TriggerSpecificObjectiveCompleted(string objectiveId)
     {
-        OnITargetFocused?.Invoke(target);
+        OnSpecificObjectiveCompleted?.Invoke(objectiveId);
     }
-    public static void TriggerITargetLost(GameObject target)
+    
+    public static void TriggerAllObjectivesCompleted()
     {
-        OnITargetLost?.Invoke(target);
+        OnAllObjectivesCompleted?.Invoke();
+    }
+    
+    public static void TriggerEnemyDefeated()
+    {
+        OnEnemyDefeated?.Invoke();
     }
 }

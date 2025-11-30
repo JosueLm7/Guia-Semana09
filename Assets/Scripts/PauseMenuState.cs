@@ -15,7 +15,7 @@ public class PauseMenuState : UIState
 
     public override void Exit()
     {
-        Debug.Log("Saliendo del estado de En Pausa");
+        Debug.Log("Saliendo del estado de Menú Principal");
         m_uiManager.pauseMenuPanel.SetActive(false);
     }
 }

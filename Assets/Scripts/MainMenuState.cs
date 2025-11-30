@@ -6,11 +6,11 @@ public class MainMenuState : UIState
 
     public override void Enter()
     {
-        Debug.Log("Entrando al estado de Menú Principal");
+        Debug.Log("Entrando al estado de Main Menu");
         m_uiManager.mainMenuPanel.SetActive(true);
         Time.timeScale = 0f;
         Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        Cursor.visible = false;
     }
 
     public override void Exit()
